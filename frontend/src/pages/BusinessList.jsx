@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import api from '../utils/api';
 import BusinessCard from '../components/BusinessCard';
-import LoadingSkeleton from '../components/LoadingSkeleton';
-import { Search } from 'lucide-react';
+import { Search, X } from 'lucide-react';
 
 const BusinessList = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -43,6 +42,12 @@ const BusinessList = () => {
     setSearchParams(searchParams);
   };
 
+  const clearSearch = () => {
+    setSearchTerm('');
+    searchParams.delete('search');
+    setSearchParams(searchParams);
+  };
+
   const setCategory = (cat) => {
     if (cat === 'All') {
       searchParams.delete('category');
@@ -53,85 +58,97 @@ const BusinessList = () => {
   };
 
   return (
-    <div className="py-8 flex flex-col md:flex-row gap-10 items-start">
+    <div className="max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row gap-10 items-start relative z-10 w-full">
       
-      {/* Desktop Sidebar Filters */}
-      <aside className="w-64 shrink-0 sticky top-24 hidden md:block">
-        <h2 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-4 px-2">Categories</h2>
+      {/* Sidebar Filters (Desktop) */}
+      <aside className="w-56 shrink-0 sticky top-20 hidden md:block">
+        <h2 className="text-[10px] tracking-widest uppercase text-[#3d4f70] mb-4">Filter</h2>
         <ul className="space-y-1.5 flex flex-col">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
-              className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-colors border ${
+              className={`w-full text-left px-4 py-2.5 rounded-lg text-sm transition-all duration-200 flex items-center justify-between border ${
                 currentCategory === cat 
-                  ? 'bg-white text-black border-transparent font-medium shadow-sm' 
-                  : 'bg-transparent text-secondary border-border hover:border-[#2a2a2a] hover:text-white'
+                  ? 'bg-[#eef0f6] text-[#080b14] font-medium border-transparent' 
+                  : 'bg-transparent text-[#8b95b0] hover:text-[#eef0f6] hover:bg-[#0e1320] border-transparent hover:border-[#1e2840]'
               }`}
             >
-              {cat}
+              <span>{cat}</span>
             </button>
           ))}
         </ul>
       </aside>
 
-      {/* Main Content Area */}
-      <div className="flex-1 w-full flex flex-col min-w-0">
+      {/* Main Area */}
+      <div className="flex-1 w-full min-w-0">
         
-        <div className="mb-8 w-full sticky top-16 z-20 pt-4 pb-2 bg-background/90 backdrop-blur-md">
-           <form onSubmit={handleSearch} className="relative w-full">
-             <input 
-               type="text" 
-               placeholder="Search by name, location..." 
-               value={searchTerm}
-               onChange={(e) => setSearchTerm(e.target.value)}
-               className="w-full bg-surface border border-border pl-12 pr-4 py-3 rounded-xl focus:outline-none focus:border-[#333333] text-white placeholder-muted transition-colors shadow-sm"
-             />
-             <Search className="absolute left-4 top-3.5 text-muted w-5 h-5" />
-           </form>
-           
-           {/* Mobile Category Pills */}
-           <div className="flex md:hidden space-x-2 overflow-x-auto pb-2 mt-4 snap-x hide-scrollbar">
-             {categories.map(cat => (
-               <button
-                 key={cat}
-                 onClick={() => setCategory(cat)}
-                 className={`snap-center shrink-0 px-4 py-2 rounded-full text-sm transition-colors border ${
-                   currentCategory === cat 
-                     ? 'bg-white text-black border-transparent font-medium' 
-                     : 'bg-transparent text-secondary border-border hover:border-[#2a2a2a]'
-                 }`}
-               >
-                 {cat}
-               </button>
-             ))}
-           </div>
+        {/* Page Header */}
+        <h1 className="text-4xl font-bold text-[#eef0f6] tracking-tight">Browse Spots</h1>
+        <p className="text-[#8b95b0] mt-2">Discover the best places near your campus</p>
+
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="relative mt-8 mb-10">
+          <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#3d4f70] w-5 h-5 pointer-events-none" />
+          <input 
+            type="text" 
+            placeholder="Search by name, location..." 
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full bg-[#0e1320] border border-[#1e2840] rounded-xl pl-12 pr-12 py-3.5 text-[#eef0f6] placeholder-[#3d4f70] text-sm focus:border-amber-500/50 shadow-[0_0_0_3px_transparent] focus:shadow-[0_0_0_3px_rgba(245,158,11,0.08)] transition-all duration-200 outline-none"
+          />
+          {searchTerm && (
+            <button type="button" onClick={clearSearch} className="absolute right-4 top-1/2 -translate-y-1/2 text-[#8b95b0] hover:text-[#eef0f6] transition">
+              <X className="w-4 h-4" />
+            </button>
+          )}
+        </form>
+
+        {/* Mobile Category Pills */}
+        <div className="flex md:hidden space-x-2 overflow-x-auto pb-4 mb-4 snap-x hide-scrollbar">
+          {categories.map(cat => (
+            <button
+              key={cat}
+              onClick={() => setCategory(cat)}
+              className={`snap-center shrink-0 px-4 py-2 rounded-lg text-sm transition-all duration-200 border ${
+                currentCategory === cat 
+                  ? 'bg-[#eef0f6] text-[#080b14] font-medium border-transparent' 
+                  : 'bg-[#0e1320] text-[#8b95b0] border-[#1e2840]'
+              }`}
+            >
+              {cat}
+            </button>
+          ))}
         </div>
 
+        {/* Grid Area */}
         <div>
-           <div className="flex justify-between items-end mb-6">
-             <h1 className="text-2xl font-bold tracking-tight text-white">
-                 {currentCategory === 'All' ? 'All Spots' : `${currentCategory} Spots`}
-             </h1>
-             <span className="text-muted text-sm">{businesses.length} results</span>
-           </div>
-
-           {/* Grid */}
-           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-             {loading ? (
-               <LoadingSkeleton count={6} />
-             ) : businesses.length > 0 ? (
-               businesses.map(business => (
+           {loading ? (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+               {[1, 2, 3, 4, 5, 6].map(n => (
+                 <div key={n} className="bg-[#0e1320] border border-[#1e2840] rounded-2xl overflow-hidden min-h-[160px]">
+                    <div className="h-1.5 w-full skeleton"></div>
+                    <div className="p-5">
+                       <div className="w-16 h-6 skeleton rounded-full mb-4"></div>
+                       <div className="w-3/4 h-5 skeleton rounded mb-2"></div>
+                       <div className="w-full h-8 skeleton rounded"></div>
+                    </div>
+                 </div>
+               ))}
+             </div>
+           ) : businesses.length > 0 ? (
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+               {businesses.map(business => (
                  <BusinessCard key={business._id} id={business._id} {...business} />
-               ))
-             ) : (
-               <div className="col-span-full py-20 flex flex-col items-center justify-center text-center border whitespace-pre-wrap border-dashed border-border rounded-2xl">
-                 <Search className="w-10 h-10 text-muted mb-4" />
-                 <h3 className="text-lg font-medium text-white mb-2">No spots found</h3>
-                 <p className="text-sm text-secondary">Try adjusting your filters or searching for something else.</p>
-               </div>
-             )}
-           </div>
+               ))}
+             </div>
+           ) : (
+             <div className="py-32 flex flex-col items-center justify-center text-center">
+               <div className="text-6xl opacity-20 mb-4 select-none">📍</div>
+               <h3 className="text-xl font-semibold text-[#8b95b0]">No spots found</h3>
+               <p className="text-sm text-[#3d4f70] mt-2">Try adjusting your filters or search terms.</p>
+             </div>
+           )}
         </div>
 
       </div>

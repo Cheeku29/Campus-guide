@@ -16,9 +16,9 @@ import Footer from './components/Footer';
 function App() {
   return (
     <Router>
-      <div className="min-h-screen bg-background text-primary flex flex-col animate-in fade-in duration-500">
+      <div className="min-h-screen flex flex-col animate-in fade-in duration-500">
         <Navbar />
-        <main className="flex-grow container mx-auto px-4 py-8 animate-in slide-in-from-bottom-4 duration-300">
+        <main className="flex-grow w-full animate-in slide-in-from-bottom-4 duration-300">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/businesses" element={<BusinessList />} />

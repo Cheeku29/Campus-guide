@@ -25,22 +25,24 @@ const Dashboard = () => {
   }, []);
 
   return (
-    <div className="py-8 max-w-4xl mx-auto">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-10 gap-4">
-        <div>
-          <h1 className="text-4xl font-bold text-white mb-2 tracking-tight flex items-center">
+    <div className="max-w-4xl mx-auto px-6 py-12 relative z-10">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6 p-8 bg-[#0e1320] border border-[#1e2840] rounded-3xl shadow-lg relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/5 blur-3xl rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none"></div>
+        
+        <div className="relative z-10">
+          <h1 className="text-3xl font-bold text-[#eef0f6] mb-2 tracking-tight flex items-center">
             Welcome back, {user?.name?.split(' ')[0]}
-            <RoleBadge role={user?.role} />
+            <RoleBadge role={user?.role} className="ml-3" />
           </h1>
-          <p className="text-secondary">{user?.email}</p>
+          <p className="text-[#8b95b0]">{user?.email}</p>
         </div>
-        <div className="bg-surface border border-border px-5 py-3 rounded-xl flex flex-col items-center justify-center min-w-[120px]">
-          <span className="block text-3xl font-bold text-white leading-none mb-1">{reviews.length}</span>
-          <span className="text-xs text-muted uppercase tracking-wider font-semibold">Reviews</span>
+        <div className="relative z-10 bg-[#080b14] border border-[#1e2840] px-6 py-4 rounded-2xl flex flex-col items-center justify-center min-w-[120px] shadow-inner">
+          <span className="block text-4xl font-bold text-[#eef0f6] leading-none mb-1">{reviews.length}</span>
+          <span className="text-[10px] text-[#3d4f70] uppercase tracking-widest font-bold">Reviews</span>
         </div>
       </div>
 
-      <h2 className="text-xl font-semibold mb-6 text-white tracking-tight">Your Recent Reviews</h2>
+      <h2 className="text-xl font-bold mb-6 text-[#eef0f6] tracking-tight flex items-center space-x-2"><span>Your Recent Reviews</span></h2>
       
       {loading ? (
         <LoadingSkeleton count={3} />
@@ -58,8 +60,9 @@ const Dashboard = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-16 border border-border bg-surface rounded-2xl shadow-sm border-dashed">
-          <p className="text-secondary">You haven't written any reviews yet. Go explore!</p>
+        <div className="text-center py-20 border border-[#1e2840] bg-[#0e1320] rounded-3xl shadow-2xl border-dashed relative overflow-hidden">
+          <div className="text-5xl text-[#1e2840] mx-auto mb-4 select-none opacity-50">✍️</div>
+          <p className="text-[#8b95b0] text-sm relative z-10">You haven't written any reviews yet. Go explore!</p>
         </div>
       )}
     </div>

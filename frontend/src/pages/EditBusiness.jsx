@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import api from '../utils/api';
 import BusinessForm from '../components/BusinessForm';
 import LoadingSkeleton from '../components/LoadingSkeleton';
+import MapWrapper from '../components/maps/MapWrapper';
 
 const EditBusiness = () => {
   const { id } = useParams();
@@ -39,16 +40,20 @@ const EditBusiness = () => {
     }
   };
 
-  if (loadingData) return <div className="max-w-xl mx-auto py-20"><LoadingSkeleton /></div>;
+  if (loadingData) return <div className="max-w-2xl mx-auto py-20 px-6"><LoadingSkeleton count={3} /></div>;
 
   return (
-    <div className="max-w-xl mx-auto py-12 md:py-20 animate-in fade-in duration-300">
-      <div className="text-center mb-10">
-        <h1 className="text-3xl font-semibold text-white tracking-tight mb-2">Edit Listing</h1>
-        <p className="text-secondary">Update the details for <span className="text-white font-medium">'{initialData.name}'</span>.</p>
+    <div className="max-w-2xl mx-auto px-6 py-12 relative">
+      <div className="absolute top-20 left-1/2 -translate-x-1/2 w-64 h-64 bg-amber-500/5 blur-3xl pointer-events-none rounded-full"></div>
+      
+      <div className="text-center mb-8 relative z-10">
+        <h1 className="text-3xl font-bold text-[#eef0f6] tracking-tight mb-3">Edit Spot Details</h1>
+        <p className="text-[#8b95b0]">Update the details for <span className="text-[#eef0f6] font-medium">'{initialData.name}'</span>.</p>
       </div>
       
-      <BusinessForm initialData={initialData} onSubmit={handleSubmit} isLoading={saving} />
+      <MapWrapper>
+        <BusinessForm initialData={initialData} onSubmit={handleSubmit} isLoading={saving} />
+      </MapWrapper>
     </div>
   );
 };

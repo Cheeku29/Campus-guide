@@ -1,31 +1,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Compass } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-black border-t border-border py-12 mt-20">
-      <div className="container mx-auto px-4">
+    <footer className="border-t border-[#141c2e] bg-[#080b14] py-16 px-6 relative z-10 w-full mt-auto">
+      <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row justify-between items-center mb-8">
-          <div className="flex items-center space-x-2 text-primary font-bold text-xl hover:opacity-80 transition-opacity mb-4 md:mb-0">
-            <span className="w-2 h-2 bg-white rounded-full inline-block animate-pulse"></span>
+          <div className="flex items-center space-x-2 text-[#eef0f6] font-semibold text-lg hover:opacity-80 transition-opacity mb-4 md:mb-0 group">
+            <span className="w-2 h-2 rounded-full bg-amber-400 mr-2 inline-block relative after:content-[''] after:absolute after:inset-0 after:rounded-full after:bg-amber-400 after:opacity-30 group-hover:after:animate-[pulse-ring_2s_cubic-bezier(0.215,0.61,0.355,1)_infinite]"></span>
             <span>CampusSpot</span>
           </div>
-          <div className="flex space-x-6 text-sm text-secondary">
-            <Link to="/" className="hover:text-primary transition-colors">Home</Link>
-            <Link to="/businesses" className="hover:text-primary transition-colors">Browse</Link>
-            <Link to="/login" className="hover:text-primary transition-colors">Login</Link>
-            <span className="text-border-subtle cursor-default hidden md:inline">|</span>
-            <span className="hover:text-primary transition-colors cursor-pointer">Terms</span>
-            <span className="hover:text-primary transition-colors cursor-pointer">Privacy</span>
+          <div className="flex gap-6 text-[#3d4f70] text-sm">
+            <Link to="/" className="hover:text-[#8b95b0] transition">Home</Link>
+            <Link to="/businesses" className="hover:text-[#8b95b0] transition">Browse</Link>
+            <Link to="/login" className="hover:text-[#8b95b0] transition">Login</Link>
+            <span className="hover:text-[#8b95b0] transition cursor-pointer">Terms</span>
+            <span className="hover:text-[#8b95b0] transition cursor-pointer">Privacy</span>
           </div>
         </div>
-        <div className="flex justify-between items-center border-t border-border-subtle pt-6">
-          <p className="text-muted text-xs">
-            © {new Date().getFullYear()} CampusSpot Inc. All rights reserved.
+        
+        <div className="divider my-8"></div>
+        
+        <div className="flex flex-col md:flex-row justify-between items-center">
+          <p className="text-[#252f45] text-xs">
+            © {new Date().getFullYear()} CampusSpot. All rights reserved.
           </p>
-          <p className="text-muted text-xs hidden sm:block delay-150 transition-opacity">
-            Made with <span className="text-primary">✦</span> by local students
+          <p className="text-[#252f45] text-xs italic mt-4 md:mt-0">
+            Built for students, by students.
           </p>
         </div>
       </div>

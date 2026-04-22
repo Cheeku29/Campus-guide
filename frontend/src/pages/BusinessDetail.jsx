@@ -4,9 +4,47 @@ import api from '../utils/api';
 import { AuthContext } from '../context/AuthContext';
 import RatingStars from '../components/RatingStars';
 import ReviewCard from '../components/ReviewCard';
-import Button from '../components/Button';
-import LoadingSkeleton from '../components/LoadingSkeleton';
 import { MapPin, Star } from 'lucide-react';
+import { GoogleMap } from '@react-google-maps/api';
+import MapWrapper from '../components/maps/MapWrapper';
+import SpotMarker from '../components/maps/SpotMarker';
+import { mapStyles } from '../config/mapStyles';
+
+const GeocodedMap = ({ address, business }) => {
+  const [center, setCenter] = useState(null);
+
+  useEffect(() => {
+    if (window.google) {
+      const geocoder = new window.google.maps.Geocoder();
+      geocoder.geocode({ address }, (results, status) => {
+        if (status === 'OK' && results[0]) {
+          setCenter({ 
+            lat: results[0].geometry.location.lat(), 
+            lng: results[0].geometry.location.lng() 
+          });
+        }
+      });
+    }
+  }, [address]);
+
+  if (!center) return <div className="h-full w-full flex items-center justify-center text-[#8b95b0] text-sm bg-[#0e1320]">Finding location...</div>;
+
+  const businessWithLocation = {
+    ...business,
+    location: { coordinates: [center.lng, center.lat] }
+  };
+
+  return (
+    <GoogleMap
+      mapContainerStyle={{ width: '100%', height: '100%' }}
+      center={center}
+      zoom={16}
+      options={{ styles: mapStyles, disableDefaultUI: true }}
+    >
+      <SpotMarker business={businessWithLocation} isSelected={true} />
+    </GoogleMap>
+  );
+};
 
 const BusinessDetail = () => {
   const { id } = useParams();
@@ -17,7 +55,7 @@ const BusinessDetail = () => {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(true);
   
-  const [reviewForm, setReviewForm] = useState({ rating: 5, text: '' });
+  const [reviewForm, setReviewForm] = useState({ rating: 0, text: '' });
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
 
@@ -41,6 +79,10 @@ const BusinessDetail = () => {
 
   const handleReviewSubmit = async (e) => {
     e.preventDefault();
+    if (!reviewForm.rating) {
+      setError('Please select a rating');
+      return;
+    }
     if (!reviewForm.text.trim()) {
       setError('Review text is required');
       return;
@@ -55,7 +97,7 @@ const BusinessDetail = () => {
         text: reviewForm.text
       });
       setReviews([res.data, ...reviews]);
-      setReviewForm({ rating: 5, text: '' });
+      setReviewForm({ rating: 0, text: '' });
       
       const newCount = business.reviewCount + 1;
       const newAvg = ((business.averageRating * business.reviewCount) + reviewForm.rating) / newCount;
@@ -68,126 +110,157 @@ const BusinessDetail = () => {
     }
   };
 
-  if (loading) return <div className="py-8"><LoadingSkeleton count={1} /></div>;
-  if (!business) return <div className="py-20 text-center text-secondary flex flex-col items-center"><span className="text-4xl block mb-2">🔭</span><h3 className="text-xl font-semibold text-white">Business disconnected.</h3></div>;
+  const getCategoryStyles = (cat) => {
+    switch(cat?.toLowerCase()) {
+      case 'food': return { border: 'border-orange-500/20', text: 'text-orange-400', bg: 'bg-orange-500/8' };
+      case 'cafe': return { border: 'border-yellow-400/20', text: 'text-yellow-400', bg: 'bg-yellow-400/8' };
+      case 'stationery': return { border: 'border-blue-500/20', text: 'text-blue-400', bg: 'bg-blue-500/8' };
+      case 'pg': return { border: 'border-purple-500/20', text: 'text-purple-400', bg: 'bg-purple-500/8' };
+      default: return { border: 'border-[#1e2840]', text: 'text-[#8b95b0]', bg: 'bg-[#141c2e]' };
+    }
+  };
+
+  if (loading) return (
+    <div className="max-w-4xl mx-auto px-6 py-16">
+       <div className="bg-[#0e1320] border border-[#1e2840] rounded-2xl p-8 min-h-[300px]">
+          <div className="h-4 w-24 skeleton mb-4 rounded"></div>
+          <div className="h-10 w-3/4 skeleton mb-6 rounded"></div>
+          <div className="h-32 w-full skeleton rounded"></div>
+       </div>
+    </div>
+  );
+  
+  if (!business) return (
+    <div className="py-32 flex flex-col items-center justify-center text-center">
+      <div className="text-6xl opacity-20 mb-4 select-none">🔭</div>
+      <h3 className="text-xl font-semibold text-[#8b95b0]">Spot not found</h3>
+      <p className="text-sm text-[#3d4f70] mt-2">This listing might have been removed.</p>
+    </div>
+  );
+
+  const style = getCategoryStyles(business.category);
 
   return (
-    <div className="py-8 flex flex-col lg:flex-row gap-10">
-      {/* Left Column - Business Info */}
-      <div className="w-full lg:w-5/12 shrink-0">
-        <div className="bg-surface rounded-2xl border border-border overflow-hidden sticky top-24 shadow-sm">
-          <div className="h-64 sm:h-80 w-full relative">
-             <img 
-               src={business.image || 'https://images.unsplash.com/photo-1550547660-d9450f859349?q=80&w=800&auto=format&fit=crop'} 
-               alt={business.name} 
-               className="w-full h-full object-cover"
-             />
-             <div className="absolute inset-0 bg-gradient-to-t from-surface via-surface/40 to-transparent"></div>
-             
-             <div className="absolute bottom-6 left-6 right-6">
-                <span className="px-3 py-1 bg-border-subtle/80 backdrop-blur-md text-white border border-border text-xs rounded-full font-medium inline-block mb-3 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
-                  {business.category}
-                </span>
-                <div className="flex justify-between items-end">
-                  <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight leading-tight">{business.name}</h1>
-                  {user && user.role === 'owner' && user._id === business.owner && (
-                    <Button variant="secondary" size="sm" onClick={() => navigate(`/owner/edit/${business._id}`)} className="shadow-xl">
-                      Edit
-                    </Button>
-                  )}
-                </div>
-             </div>
-          </div>
-          
-          <div className="p-6">
-            <div className="flex items-center text-muted text-sm mb-6 pb-6 border-b border-border">
-              <MapPin className="w-4 h-4 mr-2 shrink-0" />
-              <span>{business.address}</span>
-            </div>
-            
-            <div className="flex items-center space-x-6 mb-8">
-              <div className="flex items-baseline space-x-1">
-                 <span className="text-4xl font-bold text-white">{business.averageRating}</span>
-                 <span className="text-muted font-medium">/ 5</span>
-              </div>
-              <div>
-                <RatingStars value={Math.round(business.averageRating)} readOnly />
-                <span className="block mt-1 text-sm text-secondary font-medium">Based on {business.reviewCount} reviews</span>
-              </div>
-            </div>
-            
-            <h2 className="text-sm font-semibold text-secondary uppercase tracking-wider mb-3">About this spot</h2>
-            <p className="text-secondary leading-relaxed text-sm">{business.description}</p>
-          </div>
-        </div>
-      </div>
+    <div className="max-w-4xl mx-auto px-6 py-16 relative z-10">
+      <Link to="/businesses" className="text-sm text-[#8b95b0] hover:text-[#eef0f6] transition mb-10 inline-flex items-center gap-2">
+        ← Back to Browse
+      </Link>
 
-      {/* Right Column - Reviews */}
-      <div className="w-full lg:w-7/12 mt-8 lg:mt-0">
-        <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">Community Reviews</h2>
-        
-        {/* Add Review Form */}
-        <div className="mb-10 pb-10 border-b border-border-subtle">
-          {user ? (
-            user.role === 'owner' && user._id === business.owner ? (
-              <div className="text-center py-8 bg-surface border border-border-subtle flex flex-col justify-center items-center rounded-2xl">
-                <div className="w-12 h-12 bg-border flex items-center justify-center rounded-full mb-4">
-                  <Star className="text-secondary w-6 h-6" />
-                </div>
-                <h3 className="text-white font-medium mb-1">Owner Privileges Active</h3>
-                <p className="text-sm text-muted max-w-sm">You manage this spot. Owners cannot submit public reviews to their own listings.</p>
-              </div>
-            ) : (
-              <div className="bg-surface rounded-2xl border border-border p-6 shadow-sm">
-                 <h3 className="text-lg font-semibold text-white mb-5">Share your experience</h3>
-                 <form onSubmit={handleReviewSubmit}>
-                   {error && <div className="bg-red-500/10 border border-red-500/20 text-error p-3 rounded-xl mb-4 text-sm flex items-start animate-shake">
-                      <span className="mr-2">⚠️</span> {error}
-                   </div>}
-                   <div className="mb-5">
-                     <RatingStars 
-                       value={reviewForm.rating} 
-                       onChange={(val) => setReviewForm({ ...reviewForm, rating: val })} 
-                       size="w-8 h-8"
-                     />
-                   </div>
-                   <div className="mb-5">
-                     <textarea
-                       placeholder="What did you like or dislike?"
-                       value={reviewForm.text}
-                       onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
-                       className="w-full min-h-[120px] bg-background border border-border rounded-xl p-4 text-white focus:outline-none focus:border-[#333333] resize-none transition-colors placeholder-muted text-sm"
-                     ></textarea>
-                   </div>
-                   <Button type="submit" disabled={submitting} className="w-full sm:w-auto">
-                     {submitting ? 'Posting...' : 'Submit Review'}
-                   </Button>
-                 </form>
-              </div>
-            )
-          ) : (
-            <div className="text-center py-10 bg-surface border border-border flex flex-col justify-center items-center rounded-2xl shadow-sm">
-              <Star className="text-border w-12 h-12 mb-4" />
-              <h3 className="text-white font-medium mb-2">Join the conversation</h3>
-              <p className="text-secondary text-sm mb-6 max-w-xs">Log in to rate and review this spot.</p>
-              <Link to="/login"><Button variant="outline">Log in to review</Button></Link>
-            </div>
+      {/* Business Header */}
+      <div className="bg-[#0e1320] border border-[#1e2840] rounded-2xl p-8">
+        <div className="flex gap-2 items-center">
+          <span className={`text-[10px] tracking-wider uppercase rounded-full px-2.5 py-1 border ${style.border} ${style.text} ${style.bg}`}>
+            {business.category}
+          </span>
+          {user && user.role === 'owner' && user._id === business.owner && (
+            <span className="bg-[#8b5cf6]/10 border border-[#8b5cf6]/25 text-[#8b5cf6] text-[10px] tracking-wider uppercase rounded-full px-3 py-1">
+              Your Listing
+            </span>
           )}
         </div>
 
-        {/* Reviews List */}
-        <div className="space-y-4">
-          {reviews.length > 0 ? (
-            reviews.map(review => (
+        <h1 className="text-4xl font-bold text-[#eef0f6] tracking-tight mt-3">{business.name}</h1>
+        <p className="text-sm text-[#8b95b0] mt-2 flex items-center gap-1.5">
+          <MapPin className="w-4 h-4" />
+          {business.address}
+        </p>
+        <p className="text-[#8b95b0] text-base mt-4 border-t border-[#1e2840] pt-4 leading-relaxed">
+          {business.description}
+        </p>
+      </div>
+
+      {/* Map Section */}
+      {business?.address && (
+        <div className="bg-[#0e1320] border border-[#1e2840] rounded-2xl overflow-hidden h-[300px] mt-6 relative z-0">
+          <MapWrapper>
+             <GeocodedMap address={business.address} business={business} />
+          </MapWrapper>
+        </div>
+      )}
+
+      {/* Rating Summary Bar */}
+      <div className="mt-8 flex items-center gap-6 flex-wrap">
+        <div className="text-5xl font-bold text-[#eef0f6]">{business.averageRating}</div>
+        <RatingStars value={Math.round(business.averageRating)} readOnly size="w-6 h-6" />
+        <div className="text-sm text-[#8b95b0]">{business.reviewCount} reviews</div>
+      </div>
+
+      <div className="border-t border-[#1e2840] mt-10"></div>
+
+      {/* Reviews Section */}
+      <div className="mt-10">
+        <div className="flex items-center mb-6">
+          <h2 className="text-xl font-semibold text-[#eef0f6]">Reviews</h2>
+          <span className="bg-[#141c2e] border border-[#1e2840] text-[#8b95b0] text-xs px-2.5 py-1 rounded-full ml-2">
+            {reviews.length}
+          </span>
+        </div>
+
+        {reviews.length > 0 ? (
+          <div className="space-y-0">
+            {reviews.map(review => (
               <ReviewCard key={review._id} {...review} />
-            ))
+            ))}
+          </div>
+        ) : (
+          <div className="py-16 text-center">
+            <p className="text-[#3d4f70] text-sm">No reviews yet. Be the first!</p>
+          </div>
+        )}
+
+        {/* Add Review Form */}
+        {user ? (
+          user.role === 'owner' && user._id === business.owner ? (
+             <div className="bg-[#0e1320] border border-[#1e2840] rounded-2xl p-7 mt-10 text-center">
+               <Star className="text-[#3d4f70] w-10 h-10 mx-auto mb-3" />
+               <p className="text-[#8b95b0] text-sm">Owners cannot submit public reviews to their own listings.</p>
+             </div>
           ) : (
-            <div className="text-center py-12">
-              <p className="text-muted">No reviews yet. Be the first to share your experience!</p>
+            <div className="bg-[#0e1320] border border-[#1e2840] rounded-2xl p-7 mt-10">
+              <h3 className="text-lg font-semibold text-[#eef0f6]">Leave a Review</h3>
+              <p className="text-xs text-[#8b95b0] mt-1 mb-4">Your review helps other students</p>
+              
+              <form onSubmit={handleReviewSubmit}>
+                {error && <div className="text-[#ef4444] text-xs mb-3 animate-shake">{error}</div>}
+                
+                <RatingStars 
+                  value={reviewForm.rating} 
+                  onChange={(val) => setReviewForm({ ...reviewForm, rating: val })} 
+                  size="w-8 h-8"
+                />
+
+                <textarea
+                  placeholder="Share your experience..."
+                  value={reviewForm.text}
+                  onChange={(e) => setReviewForm({ ...reviewForm, text: e.target.value })}
+                  className="mt-4 w-full bg-[#080b14] border border-[#1e2840] rounded-xl px-4 py-3 text-sm text-[#eef0f6] placeholder-[#3d4f70] min-h-[110px] resize-none focus:border-amber-500/50 shadow-[0_0_0_3px_transparent] focus:shadow-[0_0_0_3px_rgba(245,158,11,0.08)] outline-none transition-all duration-200"
+                ></textarea>
+
+                <button 
+                  type="submit" 
+                  disabled={submitting} 
+                  className="mt-4 w-full sm:w-auto overflow-hidden relative group font-medium px-6 py-2.5 rounded-lg text-[#080b14] shadow-lg shadow-amber-500/10 transition-all duration-200"
+                >
+                   <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-amber-400 to-orange-500 transition-transform duration-300 group-hover:scale-105"></span>
+                   <span className="absolute inset-0 w-full h-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity"></span>
+                   <span className="relative z-10 flex items-center justify-center">
+                     {submitting ? 'Submitting...' : 'Submit Review'}
+                   </span>
+                </button>
+              </form>
             </div>
-          )}
-        </div>
+          )
+        ) : (
+          <div className="bg-[#0e1320] border border-[#1e2840] rounded-2xl p-8 text-center mt-10 flex flex-col items-center">
+            <span className="text-3xl text-[#3d4f70] mb-3 select-none">🔒</span>
+            <p className="text-[#8b95b0] text-sm mb-4">Login to leave a review</p>
+            <Link to="/login" className="border border-[#1e2840] text-[#8b95b0] px-5 py-2 rounded-lg hover:text-[#eef0f6] hover:bg-[#141c2e] transition">
+              Login to review
+            </Link>
+          </div>
+        )}
       </div>
+
     </div>
   );
 };
