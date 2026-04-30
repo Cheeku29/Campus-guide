@@ -326,9 +326,9 @@ You are free to use, modify, and distribute this software with attribution.
 
 ## 📄 Videos
 
-Frontend Video Description : (https://drive.google.com/file/d/1ROdIDwpsO1ZDsraoCDbzXzlAfN2zsI9_/view?usp=sharing)
-Backend Video Description : (https://drive.google.com/file/d/1bPsfquh7T_HPct0bfSdRBrS-4imj_w9z/view?usp=sharing)
-Project Demo : (https://drive.google.com/file/d/1KCVCzxS6Wll3BnRn3J3lMfg_tAWXyOY8/view?usp=sharing)
+- Frontend Video Description : (https://drive.google.com/file/d/1ROdIDwpsO1ZDsraoCDbzXzlAfN2zsI9_/view?usp=sharing)
+- Backend Video Description : (https://drive.google.com/file/d/1bPsfquh7T_HPct0bfSdRBrS-4imj_w9z/view?usp=sharing)
+- Project Demo : (https://drive.google.com/file/d/1KCVCzxS6Wll3BnRn3J3lMfg_tAWXyOY8/view?usp=sharing)
 
 
 <img width="1920" height="1080" alt="Screenshot (17)" src="https://github.com/user-attachments/assets/c633e880-c3db-4093-a3cd-58cb2519fb67" />
