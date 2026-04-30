@@ -320,14 +320,29 @@ You are free to use, modify, and distribute this software with attribution.
 
 <br/>
 
+<br/>
+
 ---
 
-## 👤 Author
+## 📄 Videos
+
+Frontend Video Description : (https://drive.google.com/file/d/1ROdIDwpsO1ZDsraoCDbzXzlAfN2zsI9_/view?usp=sharing)
+Backend Video Description : (https://drive.google.com/file/d/1bPsfquh7T_HPct0bfSdRBrS-4imj_w9z/view?usp=sharing)
+Project Demo : (https://drive.google.com/file/d/1KCVCzxS6Wll3BnRn3J3lMfg_tAWXyOY8/view?usp=sharing)
+
+<br/>
+
+---
+
+## 👤 Authors
 
 <div align="center">
 
 **Arindam Gupta**  
 GitHub: [@Cheeku29](https://github.com/Cheeku29)
+
+**Hariharan Kalyana Sundaram**  
+GitHub: [@Cheeku29](https://github.com/Hariharan2006K)
 
 <br/>
 
