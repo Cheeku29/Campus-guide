@@ -357,7 +357,7 @@ GitHub: [@Cheeku29](https://github.com/Cheeku29)
 GitHub: [@Hariharan2006K](https://github.com/Hariharan2006K)
 
 **Debmalyaa Dey**  
-GitHub: [@Hariharan2006K](https://github.com/Debmalyaa29)
+GitHub: [@Debmalyaa29](https://github.com/Debmalyaa29)
 
 **Tulasi Viswambhar**  
 **Kasi Viswanadh**  
