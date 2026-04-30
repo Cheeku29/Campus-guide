@@ -330,6 +330,18 @@ Frontend Video Description : (https://drive.google.com/file/d/1ROdIDwpsO1ZDsraoC
 Backend Video Description : (https://drive.google.com/file/d/1bPsfquh7T_HPct0bfSdRBrS-4imj_w9z/view?usp=sharing)
 Project Demo : (https://drive.google.com/file/d/1KCVCzxS6Wll3BnRn3J3lMfg_tAWXyOY8/view?usp=sharing)
 
+
+<img width="1920" height="1080" alt="Screenshot (17)" src="https://github.com/user-attachments/assets/c633e880-c3db-4093-a3cd-58cb2519fb67" />
+<img width="1920" height="1080" alt="Screenshot (20)" src="https://github.com/user-attachments/assets/ba3a5f65-4e52-4c55-8f35-0a0e535a204a" />
+<img width="1920" height="1080" alt="Screenshot (19)" src="https://github.com/user-attachments/assets/79d93674-16a0-40c0-99b4-41de58159a4d" />
+<img width="1920" height="1080" alt="Screenshot (16)" src="https://github.com/user-attachments/assets/ce65c91a-03bf-43a4-a60c-35893bfa8d6b" />
+<img width="1920" height="1080" alt="Screenshot (15)" src="https://github.com/user-attachments/assets/008a4e74-d04e-47e4-a9b1-5af969c0d314" />
+
+
+
+
+
+
 <br/>
 
 ---
@@ -342,7 +354,15 @@ Project Demo : (https://drive.google.com/file/d/1KCVCzxS6Wll3BnRn3J3lMfg_tAWXyOY
 GitHub: [@Cheeku29](https://github.com/Cheeku29)
 
 **Hariharan Kalyana Sundaram**  
-GitHub: [@Cheeku29](https://github.com/Hariharan2006K)
+GitHub: [@Hariharan2006K](https://github.com/Hariharan2006K)
+
+**Debmalyaa Dey**  
+GitHub: [@Hariharan2006K](https://github.com/Debmalyaa29)
+
+**Tulasi Viswambhar**  
+**Kasi Viswanadh**  
+
+
 
 <br/>
 
